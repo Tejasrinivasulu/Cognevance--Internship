@@ -1,0 +1,7 @@
+services:
+  churn-api:
+    build: .
+    image: customer-churn-api:latest
+    ports:
+      - "8000:8000"
+    restart: unless-stopped

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fashion Classifier — Demo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#1a2433; --muted:#5a6575; --navy:#1e3a5f; --accent:#c45c2a; --line:rgba(26,36,51,.12); --ok:#2f7d4a; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      min-height:100vh;font-family:Outfit,sans-serif;color:var(--ink);
+      background:radial-gradient(ellipse 70% 45% at 10% 0%,rgba(30,58,95,.14),transparent 50%),
+                 radial-gradient(ellipse 55% 40% at 100% 0%,rgba(196,92,42,.10),transparent 45%),
+                 linear-gradient(165deg,#eef2f7,#f7f4ef 55%,#e9eef5);
+      padding:2.4rem 1.2rem 3rem;
+    }
+    .wrap{max-width:780px;margin:0 auto}
+    h1{font-family:Fraunces,serif;font-size:clamp(1.9rem,4.5vw,2.5rem);color:var(--navy)}
+    .tag{margin:.5rem 0 1rem;color:var(--muted);max-width:42ch}
+    .badge{display:inline-flex;gap:.4rem;align-items:center;padding:.35rem .75rem;border-radius:999px;background:rgba(47,125,74,.12);color:var(--ok);font-size:.85rem;font-weight:500}
+    .panel{margin-top:1rem;background:rgba(255,255,255,.75);border:1px solid var(--line);border-radius:1.1rem;padding:1.2rem}
+    .label{font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.55rem}
+    .result{font-family:Fraunces,serif;font-size:2.2rem;color:var(--accent)}
+    .meta{color:var(--muted);margin-top:.25rem}
+    .bars{margin-top:1rem;display:grid;gap:.6rem}
+    .row{display:grid;grid-template-columns:6rem 1fr 3.4rem;gap:.5rem;align-items:center;font-size:.9rem}
+    .track{height:.55rem;border-radius:999px;background:rgba(26,36,51,.08);overflow:hidden}
+    .fill{height:100%;background:linear-gradient(90deg,#1e3a5f,#c45c2a);border-radius:inherit}
+    .grid{display:grid;gap:1rem;margin-top:1rem}
+    @media(min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+    .stat{font-family:Fraunces,serif;font-size:2rem;color:var(--ok)}
+    code{font-family:ui-monospace,Consolas,monospace;font-size:.78rem;background:rgba(30,58,95,.08);padding:.1rem .35rem;border-radius:.3rem}
+    footer{margin-top:1.3rem;color:var(--muted);font-size:.9rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Fashion Classifier API</h1>
+    <p class="tag">Task 3 — Flask + Docker deployment of the Fashion-MNIST clothing model.</p>
+    <div class="badge" id="badge">Checking API…</div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="label">Test accuracy</div>
+        <div class="stat" id="acc">—</div>
+        <p class="meta">Target: ≥ 95%</p>
+      </section>
+      <section class="panel">
+        <div class="label">Stack</div>
+        <div class="stat" style="font-size:1.35rem;font-family:Outfit,sans-serif;">Flask + Docker</div>
+        <p class="meta">POST <code>/predict</code></p>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="label">Live prediction (sample sneaker)</div>
+      <div class="result" id="label">…</div>
+      <p class="meta" id="meta">Uploading…</p>
+      <div class="bars" id="bars"></div>
+    </section>
+
+    <footer>Keep API on <code>localhost:8000</code> · screenshot this page for your demo</footer>
+  </div>
+  <script>
+    async function run() {
+      try {
+        const health = await fetch("http://localhost:8000/health").then(r => r.json());
+        const pct = ((health.test_accuracy || 0) * 100).toFixed(2);
+        document.getElementById("badge").textContent = `Healthy · Flask · ${pct}% accuracy`;
+        document.getElementById("acc").textContent = pct + "%";
+
+        const blob = await fetch("./samples/sample_sneaker.png").then(r => r.blob());
+        const form = new FormData();
+        form.append("file", blob, "sample_sneaker.png");
+        const data = await fetch("http://localhost:8000/predict", { method: "POST", body: form }).then(r => r.json());
+
+        document.getElementById("label").textContent = data.predicted_class;
+        document.getElementById("meta").textContent = `confidence ${(data.confidence * 100).toFixed(2)}%`;
+        document.getElementById("bars").innerHTML = data.top_k.map(t => `
+          <div class="row">
+            <span>${t.label}</span>
+            <div class="track"><div class="fill" style="width:${(t.probability*100).toFixed(1)}%"></div></div>
+            <span>${(t.probability*100).toFixed(1)}%</span>
+          </div>`).join("");
+      } catch (e) {
+        document.getElementById("label").textContent = "API offline";
+        document.getElementById("meta").textContent = "Run: python -m app.main  then refresh. " + e.message;
+      }
+    }
+    run();
+  </script>
+</body>
+</html>

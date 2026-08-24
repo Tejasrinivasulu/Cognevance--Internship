@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Customer Churn Prediction API — Predict telecom customer churn in real time with Flask, Scikit-learn, and Docker." />
+  <meta name="keywords" content="Customer Churn, Machine Learning, Flask, Docker, Scikit-learn, Prediction API" />
+  <meta name="author" content="InternSpark Task 3" />
+  <title>Customer Churn Prediction API | ML Deployment</title>
+
+  <!-- Google Fonts: Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="style.css?v=hero2" />
+</head>
+<body>
+  <!-- ========== Sticky Navbar ========== -->
+  <header class="navbar" id="navbar">
+    <div class="nav-inner">
+      <span class="nav-spacer" aria-hidden="true"></span>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#home" data-nav="home">Home</a>
+        <a href="#about" data-nav="about">About</a>
+        <a href="#features" data-nav="features">Features</a>
+        <a href="/predict-page" data-nav="predict">Predict</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ========== Hero Section ========== -->
+  <section class="hero" id="home">
+    <div class="hero-bg" aria-hidden="true"></div>
+
+    <div class="container hero-center">
+      <h1>Customer Churn Prediction API</h1>
+
+      <p class="hero-desc">
+        Predict if a telecom customer will leave the service.<br />
+        Get fast, real-time results with a simple prediction form.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-hero" href="/predict-page">
+          <i class="fa-solid fa-rocket"></i> Get Started
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== About Section ========== -->
+  <section class="section about" id="about">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2>About the Project</h2>
+        <p>
+          This API helps telecom companies find customers who may leave their service.
+          It uses a trained model to give real-time churn predictions through a Flask REST API.
+        </p>
+      </div>
+
+      <div class="about-grid">
+        <article class="about-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-chart-column"></i></div>
+          <h3>Customer Analytics</h3>
+          <p>Understand tenure, contracts, and billing patterns that drive churn risk.</p>
+        </article>
+
+        <article class="about-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-robot"></i></div>
+          <h3>Machine Learning</h3>
+          <p>Trained classification model delivering reliable churn probability scores.</p>
+        </article>
+
+        <article class="about-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-bolt"></i></div>
+          <h3>Flask API</h3>
+          <p>Lightweight REST endpoints for single and batch customer predictions.</p>
+        </article>
+
+        <article class="about-card reveal">
+          <div class="icon-wrap"><i class="fa-brands fa-docker"></i></div>
+          <h3>Docker Ready</h3>
+          <p>Containerized setup for consistent local and cloud deployment.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Features Section ========== -->
+  <section class="section features" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <h2>Features</h2>
+        <p>Everything you need for a polished ML deployment portfolio project.</p>
+      </div>
+
+      <div class="features-grid">
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-robot"></i></div>
+          <h3>Machine Learning Model</h3>
+          <p>Fast and accurate customer churn prediction.</p>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-bolt"></i></div>
+          <h3>Flask Backend</h3>
+          <p>High-performance REST API for predictions.</p>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-database"></i></div>
+          <h3>Data Preprocessing</h3>
+          <p>Handles customer data before prediction.</p>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-chart-line"></i></div>
+          <h3>Real-Time Prediction</h3>
+          <p>Instant prediction results.</p>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-shield-halved"></i></div>
+          <h3>Secure API</h3>
+          <p>Validated user inputs.</p>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-brands fa-docker"></i></div>
+          <h3>Docker Support</h3>
+          <p>Easy deployment using Docker.</p>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-mobile-screen"></i></div>
+          <h3>Responsive Design</h3>
+          <p>Works on desktop and mobile.</p>
+        </article>
+
+        <article class="feature-card reveal">
+          <div class="icon-wrap"><i class="fa-solid fa-file-code"></i></div>
+          <h3>REST API</h3>
+          <p>Clean JSON endpoints for integration and demos.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Back to top -->
+  <button class="back-top" id="backTop" aria-label="Back to top">
+    <i class="fa-solid fa-arrow-up"></i>
+  </button>
+
+  <script src="script.js"></script>
+</body>
+</html>

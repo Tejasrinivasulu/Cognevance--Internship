@@ -1,0 +1,6 @@
+{
+  "churn_prediction": 1,
+  "churn_label": "Churn",
+  "churn_probability": 0.516,
+  "model_name": "Logistic Regression"
+}

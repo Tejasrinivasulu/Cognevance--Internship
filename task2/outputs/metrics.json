@@ -1,0 +1,36 @@
+{
+  "dataset": "fashionmnist",
+  "test_accuracy": 0.9374,
+  "macro_f1": 0.9374967267461208,
+  "best_val_accuracy": 0.94,
+  "class_names": [
+    "Trouser",
+    "Dress",
+    "Sandal",
+    "Sneaker",
+    "Bag"
+  ],
+  "history": {
+    "train_loss": [
+      0.7910172504848904,
+      0.39386330207188924,
+      0.3200733224550883
+    ],
+    "val_loss": [
+      0.36808929443359373,
+      0.2869783920049667,
+      0.2107984960079193
+    ],
+    "train_acc": [
+      0.7272222222222222,
+      0.8747222222222222,
+      0.8905555555555555
+    ],
+    "val_acc": [
+      0.91,
+      0.9075,
+      0.94
+    ]
+  },
+  "classification_report": "              precision    recall  f1-score   support\n\n     Trouser       0.97      0.95      0.96      1000\n       Dress       0.95      0.94      0.95      1000\n      Sandal       0.91      0.90      0.90      1000\n     Sneaker       0.91      0.94      0.92      1000\n         Bag       0.96      0.95      0.95      1000\n\n    accuracy                           0.94      5000\n   macro avg       0.94      0.94      0.94      5000\nweighted avg       0.94      0.94      0.94      5000\n"
+}

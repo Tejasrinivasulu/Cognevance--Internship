@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prediction Result · Customer Churn Prediction API</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}" />
+</head>
+<body>
+  <header class="app-nav">
+    <div class="inner">
+      <a class="brand" href="/">
+        <i class="fa-solid fa-chart-column"></i>
+        <span>Customer Churn Prediction API</span>
+      </a>
+      <div class="nav-actions">
+        <a href="/">Home</a>
+        <a href="/predict-page">Predict Again</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container result-wrap" id="root">
+    <div class="empty-state panel">
+      <i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem;color:#2563eb;margin-bottom:0.75rem;"></i>
+      <p>Loading result…</p>
+    </div>
+  </main>
+
+  <script>
+    const raw = sessionStorage.getItem("churn_result");
+    const root = document.getElementById("root");
+
+    if (!raw) {
+      root.innerHTML = `
+        <div class="empty-state panel">
+          <h2 style="color:#0b2c5e;margin-bottom:0.5rem;">No result found</h2>
+          <p style="margin-bottom:1.2rem;">Please submit a prediction first.</p>
+          <a class="btn btn-primary" href="/predict-page"><i class="fa-solid fa-arrow-left"></i> Go to Predict</a>
+        </div>`;
+    } else {
+      const data = JSON.parse(raw);
+      if (data.mode === "single") renderSingle(data);
+      else renderBatch(data);
+    }
+
+    function renderSingle(data) {
+      const r = data.result;
+      const input = data.input || {};
+      const risk = !!r.churn_prediction;
+      const pct = (r.churn_probability * 100).toFixed(1);
+      const tip = risk
+        ? "High churn risk detected. Consider retention offers, support outreach, or a longer contract."
+        : "Customer looks stable. Continue monitoring engagement and billing satisfaction.";
+
+      const keys = [
+        "tenure", "Contract", "InternetService", "MonthlyCharges",
+        "TotalCharges", "PaymentMethod", "gender", "Partner"
+      ];
+
+      root.innerHTML = `
+        <section class="result-hero">
+          <div class="result-badge ${risk ? "risk" : "safe"}">
+            <i class="fa-solid ${risk ? "fa-triangle-exclamation" : "fa-circle-check"}"></i>
+            ${risk ? "High Risk" : "Low Risk"}
+          </div>
+          <h1 class="result-title ${risk ? "risk" : "safe"}">${r.churn_label}</h1>
+          <p class="result-sub">${pct}% churn probability · ${r.model_name}</p>
+          <div class="meter-block">
+            <div class="meter"><span id="bar"></span></div>
+            <div class="meter-labels"><span>Stay</span><span>${pct}%</span><span>Churn</span></div>
+          </div>
+        </section>
+
+        <section class="stats">
+          <div class="stat-card">
+            <div class="k">Prediction</div>
+            <div class="v">${r.churn_label}</div>
+          </div>
+          <div class="stat-card">
+            <div class="k">Probability</div>
+            <div class="v">${pct}%</div>
+          </div>
+          <div class="stat-card">
+            <div class="k">Model</div>
+            <div class="v" style="font-size:1.05rem;">${r.model_name}</div>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3><i class="fa-solid fa-id-card" style="color:#2563eb;margin-right:0.35rem;"></i> Customer snapshot</h3>
+          <div class="kv">
+            ${keys.map(k => `
+              <div class="kv-item">
+                <span>${k}</span>
+                <strong>${input[k] ?? "—"}</strong>
+              </div>`).join("")}
+          </div>
+          <p style="margin-top:1rem;color:#64748b;font-size:0.92rem;">${tip}</p>
+        </section>
+
+        <div class="result-actions">
+          <a class="btn btn-primary" href="/predict-page"><i class="fa-solid fa-rotate"></i> New Prediction</a>
+          <a class="btn btn-secondary" href="/"><i class="fa-solid fa-house"></i> Back Home</a>
+        </div>
+      `;
+
+      requestAnimationFrame(() => {
+        const bar = document.getElementById("bar");
+        if (bar) bar.style.width = pct + "%";
+      });
+    }
+
+    function renderBatch(data) {
+      const r = data.result;
+      const churnRate = r.rows ? ((r.churn_count / r.rows) * 100).toFixed(1) : "0.0";
+
+      root.innerHTML = `
+        <section class="result-hero">
+          <div class="result-badge ${r.churn_count > 0 ? "risk" : "safe"}">
+            <i class="fa-solid fa-file-csv"></i> Batch Complete
+          </div>
+          <h1 class="result-title" style="color:#0b2c5e;">CSV Prediction Results</h1>
+          <p class="result-sub">${data.filename || "upload.csv"} · ${r.model_name || "Model"}</p>
+        </section>
+
+        <section class="stats">
+          <div class="stat-card"><div class="k">Total Rows</div><div class="v">${r.rows}</div></div>
+          <div class="stat-card"><div class="k">Predicted Churn</div><div class="v" style="color:#dc2626;">${r.churn_count}</div></div>
+          <div class="stat-card"><div class="k">No Churn</div><div class="v" style="color:#059669;">${r.no_churn_count}</div></div>
+        </section>
+
+        <section class="detail-card">
+          <h3>Churn rate in this file: ${churnRate}%</h3>
+          <div class="table-wrap" style="margin-top:0.85rem;">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th><th>Label</th><th>Probability</th>
+                  <th>Tenure</th><th>Contract</th><th>Monthly</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${(r.predictions || []).map((row, i) => `
+                  <tr>
+                    <td>${i + 1}</td>
+                    <td class="${row.churn_prediction ? "tag-risk" : "tag-safe"}">${row.churn_label}</td>
+                    <td>${(row.churn_probability * 100).toFixed(1)}%</td>
+                    <td>${row.tenure ?? "—"}</td>
+                    <td>${row.Contract ?? "—"}</td>
+                    <td>${row.MonthlyCharges ?? "—"}</td>
+                  </tr>`).join("")}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="result-actions">
+          <a class="btn btn-primary" href="/predict-page"><i class="fa-solid fa-upload"></i> Upload Another</a>
+          <a class="btn btn-secondary" href="/"><i class="fa-solid fa-house"></i> Back Home</a>
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>

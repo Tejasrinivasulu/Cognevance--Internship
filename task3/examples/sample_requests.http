@@ -1,0 +1,13 @@
+### Health
+GET http://localhost:8000/health
+
+### Predict (upload image in your HTTP client)
+POST http://localhost:8000/predict
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="file"; filename="sample_sneaker.png"
+Content-Type: image/png
+
+< ./samples/sample_sneaker.png
+--boundary--

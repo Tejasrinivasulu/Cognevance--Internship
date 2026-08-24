@@ -217,3 +217,8 @@ python -m pip install -r requirements.txt
 <p>See each task README for notebooks, endpoints, and extra run options.</p>
 
 </div>
+<div align="center">
+
+⭐ <b>If you like this project, don't forget to Star the repository!</b>
+
+</div>
